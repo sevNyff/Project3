@@ -1,4 +1,4 @@
-package ch.fhnw.richards.aigs_spring_server;
+package ch.fhnw.richards.aigs_spring_server.utility;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

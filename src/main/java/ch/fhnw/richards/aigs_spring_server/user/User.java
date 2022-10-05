@@ -1,4 +1,4 @@
-package ch.fhnw.richards.aigs_spring_server;
+package ch.fhnw.richards.aigs_spring_server.user;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -11,15 +11,22 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "users")
 public class User {
-	@Id @Column(name = "username") private String userName;
-	@Column(name = "password") private String password;
-	@Column(name = "userexpiry") private LocalDateTime userExpiry;
-	@Column(name = "token") private String token;
-	@Column(name = "tokenexpiry") private LocalDateTime tokenExpiry;
-	
-	User() {}
-	
-	User(String userName, String password) {
+	@Id
+	@Column(name = "username")
+	private String userName;
+	@Column(name = "password")
+	private String password;
+	@Column(name = "userexpiry")
+	private LocalDateTime userExpiry;
+	@Column(name = "token")
+	private String token;
+	@Column(name = "tokenexpiry")
+	private LocalDateTime tokenExpiry;
+
+	public User() {
+	}
+
+	public User(String userName, String password) {
 		this.userName = userName;
 		this.password = password;
 	}
@@ -63,22 +70,22 @@ public class User {
 	public void setTokenExpiry(LocalDateTime tokenExpiry) {
 		this.tokenExpiry = tokenExpiry;
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o == null || !(o instanceof User)) return false;
 		User u = (User) o;
 		return (this.userName.equals(u.userName));
 	}
-	
-	  @Override
-	  public int hashCode() {
-	    return Objects.hash(this.userName);
-	  }
 
-	  @Override
-	  public String toString() {
-	    return "Room{" + "userName=" + this.userName + '}';
-	  }
-	
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.userName);
+	}
+
+	@Override
+	public String toString() {
+		return "Room{" + "userName=" + this.userName + '}';
+	}
+
 }

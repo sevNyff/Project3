@@ -1,5 +1,4 @@
-package ch.fhnw.richards.aigs_spring_server;
-import javax.servlet.http.HttpServletRequest;
+package ch.fhnw.richards.aigs_spring_server.game;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,16 +8,19 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ch.fhnw.richards.aigs_spring_server.user.UserExceptionHandler;
+import ch.fhnw.richards.aigs_spring_server.utility.ErrorResponse;
+
 @ControllerAdvice
-public class UserExceptionHandler {
+public class GameExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserExceptionHandler.class);
 
-    @ExceptionHandler(value = {UserException.class})
+    @ExceptionHandler(value = {GameException.class})
     @ResponseBody
-    ResponseEntity<ErrorResponse> userError(UserException ex) {
-        LOG.error("Exception in login " , ex);
-        ErrorResponse response = new ErrorResponse("User error", ex.getMessage());
+    ResponseEntity<ErrorResponse> gameError(GameException ex) {
+        LOG.error("Game exception " , ex);
+        ErrorResponse response = new ErrorResponse("Game error", ex.getMessage());
         return new ResponseEntity<ErrorResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
