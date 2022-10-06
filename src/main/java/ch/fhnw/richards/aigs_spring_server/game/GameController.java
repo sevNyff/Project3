@@ -22,7 +22,6 @@ public class GameController {
 	// User creates a new game
 	@PostMapping("/game/new")
 	Game newGame(@RequestBody Game game) {
-		System.out.println(game);
 		// First, check that the token is valid
 		if (Token.validate(game.getToken())) {
 			return repository.save(game);

@@ -45,7 +45,6 @@ public class UserController {
 		if (oldUser.isPresent() && oldUser.get().getPassword().equals(User.getPassword())) {
 			User.setUserExpiry(LocalDateTime.now().plusDays(7));
 			User.setToken(Token.generate());
-			User.setTokenExpiry(LocalDateTime.now().plusDays(1));
 			return repository.save(User);
 		} else {
 			throw new UserException("Wrong password for user '" + User.getUserName() + "'");
@@ -59,7 +58,6 @@ public class UserController {
 		if (oldUser.isPresent()) {
 			User thisUser = oldUser.get();
 			thisUser.setToken(null);
-			thisUser.setTokenExpiry(null);
 			return repository.save(thisUser);
 		} else {
 			throw new UserException("\"" + User.getUserName() + "\" does not exist");

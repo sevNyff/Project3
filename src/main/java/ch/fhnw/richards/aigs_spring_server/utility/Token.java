@@ -24,21 +24,13 @@ public class Token {
 		boolean valid = false;
 		UserRepository repository = UserController.getRepository();
 		try {
-			System.out.println("Incoming token: " + token);
 			Long.parseLong(token, 16);
-			System.out.println("Token parsed");
 
 			List<User> users = repository.findByToken(token); // Should be only one
-			if (users.size() > 0) {
-				System.out.println("User found");
-				LocalDateTime expiry = users.get(0).getTokenExpiry();
-				System.out.println("Token expiry is " + expiry);
-				valid = expiry.compareTo(LocalDateTime.now()) > 0;
-			}
+			valid = (users.size() > 0);
 
 		} catch (NumberFormatException e) {
 		}
-		System.out.println("Valid = " + valid);
 		return valid;
 	}
 }

@@ -20,8 +20,6 @@ public class User {
 	private LocalDateTime userExpiry;
 	@Column(name = "token")
 	private String token;
-	@Column(name = "tokenexpiry")
-	private LocalDateTime tokenExpiry;
 
 	public User() {
 	}
@@ -61,14 +59,6 @@ public class User {
 
 	public void setToken(String token) {
 		this.token = token;
-	}
-
-	public LocalDateTime getTokenExpiry() {
-		return tokenExpiry;
-	}
-
-	public void setTokenExpiry(LocalDateTime tokenExpiry) {
-		this.tokenExpiry = tokenExpiry;
 	}
 
 	@Override
