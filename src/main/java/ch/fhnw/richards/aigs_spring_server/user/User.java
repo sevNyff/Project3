@@ -75,7 +75,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "Room{" + "userName=" + this.userName + '}';
+		return "User{" + "userName=" + this.userName + '}';
 	}
 
 }
