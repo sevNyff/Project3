@@ -17,8 +17,8 @@ public class Game {
 	GameType gameType;
 	@Column(name = "difficulty")
 	Long difficulty;
-	@Column(name = "options")
-	String options;
+	@Column(name = "playerFirst")
+	Boolean playerFirst;
 	@Column(name = "board")
 	long[][] board;
 	@Column(name = "result")
@@ -55,12 +55,12 @@ public class Game {
 		this.difficulty = difficulty;
 	}
 
-	public String getOptions() {
-		return options;
+	public Boolean getPlayerFirst() {
+		return playerFirst;
 	}
 
-	public void setOptions(String options) {
-		this.options = options;
+	public void setPlayer(Boolean playerFirst) {
+		this.playerFirst = playerFirst;
 	}
 
 	public long[][] getBoard() {

@@ -16,26 +16,41 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.fhnw.richards.aigs_spring_server.gameEngines.GameEngine;
 import ch.fhnw.richards.aigs_spring_server.user.User;
+import ch.fhnw.richards.aigs_spring_server.user.UserRepository;
 import ch.fhnw.richards.aigs_spring_server.utility.Token;
 
 @RestController
 public class GameController {
-	private final GameRepository repository;
+	private static GameRepository repository;
 
 	GameController(GameRepository repository) {
 		this.repository = repository;
 	}
 
-	// User creates a new game
-	// TODO: Only allow one game per token!!!
+	// User creates a new game. We accept user-inputs as a game object, even though
+	// no game exists yet. The game-engine takes the difficulty and options from
+	// this, create a new game object, and saves this in the repository.
 	@PostMapping("/game/new")
 	Game newGame(@RequestBody Game game) {
-		// First, check that the token is valid
-		if (Token.validate(game.getToken())) {
-			// Ensure that no unwanted options are set
-			game.setBoard(null);
-			game.setResult(false);
-			return repository.save(game);
+		// Check the token for validity
+		String token = game.getToken();
+		if (Token.validate(token)) {
+			// Only allow one game - if a game already exists, we cannot create a new one
+			Game oldGame = repository.findById(token).get();
+			if (oldGame == null) {
+
+				// Get game engine
+				GameEngine ge = GameEngine.getGameEngine(game.getGameType());
+				if (ge != null) {
+					game = ge.newGame(game);
+					return repository.save(game);
+				} else {
+					throw new GameException("Invalid game type");
+				}
+			} else {
+				throw new GameException("Game already running for this user");
+			}
+
 		} else {
 			throw new GameException("Invalid token");
 		}
@@ -98,6 +113,11 @@ public class GameController {
 	@GetMapping("/games")
 	List<Game> all() {
 		return repository.findAll();
+	}
+
+	// ||Game data needs checked from various places
+	public static GameRepository getRepository() {
+		return repository;
 	}
 
 }

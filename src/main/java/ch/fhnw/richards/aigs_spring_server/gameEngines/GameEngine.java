@@ -18,6 +18,9 @@ public interface GameEngine {
 		}
 	}
 	
+	// Create a new, empty game. We use the incoming object as a basis, but set "board" and "result"
+	public abstract Game newGame(Game game);
+	
 	// Return an updated Game object, or null if the move was invalid
 	public abstract Game move(Game game, HashMap<String,String> move);
 }
