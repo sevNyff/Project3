@@ -16,7 +16,7 @@ import ch.fhnw.richards.aigs_spring_server.utility.Token;
 
 @RestController
 public class GameController {
-	private final GameRepository repository;
+	private static GameRepository repository;
 
 	GameController(GameRepository repository) {
 		this.repository = repository;
@@ -97,6 +97,11 @@ public class GameController {
 	@GetMapping("/games")
 	List<Game> all() {
 		return repository.findAll();
+	}
+
+	// ||Game data needs checked from various places
+	public static GameRepository getRepository() {
+		return repository;
 	}
 
 }
