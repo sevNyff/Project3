@@ -18,6 +18,9 @@ public interface GameEngine {
 		}
 	}
 	
+	// Return a new Game object
+	public abstract Game newGame(Game game);
+	
 	// Return an updated Game object, or null if the move was invalid
 	public abstract Game move(Game game, HashMap<String,String> move);
 }

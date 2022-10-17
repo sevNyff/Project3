@@ -1,12 +1,9 @@
 package ch.fhnw.richards.aigs_spring_server.game;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +12,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.fhnw.richards.aigs_spring_server.gameEngines.GameEngine;
-import ch.fhnw.richards.aigs_spring_server.user.User;
 import ch.fhnw.richards.aigs_spring_server.utility.Token;
 
 @RestController
@@ -27,15 +23,18 @@ public class GameController {
 	}
 
 	// User creates a new game
-	// TODO: Only allow one game per token!!!
 	@PostMapping("/game/new")
 	Game newGame(@RequestBody Game game) {
 		// First, check that the token is valid
 		if (Token.validate(game.getToken())) {
-			// Ensure that no unwanted options are set
-			game.setBoard(null);
-			game.setResult(false);
-			return repository.save(game);
+			// Get game engine
+			GameEngine ge = GameEngine.getGameEngine(game.getGameType());
+			if (ge != null) {
+				game = ge.newGame(game);
+				return repository.save(game);
+			} else {
+				throw new GameException("Invalid game type");
+			}
 		} else {
 			throw new GameException("Invalid token");
 		}
