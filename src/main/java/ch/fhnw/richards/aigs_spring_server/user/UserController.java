@@ -1,7 +1,6 @@
 package ch.fhnw.richards.aigs_spring_server.user;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,9 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.fhnw.richards.aigs_spring_server.utility.Token;
 
@@ -45,7 +41,9 @@ public class UserController {
 		if (oldUser.isPresent() && oldUser.get().getPassword().equals(User.getPassword())) {
 			User.setUserExpiry(LocalDateTime.now().plusDays(7));
 			User.setToken(Token.generate());
-			return repository.save(User);
+			repository.save(User);
+			User.setPassword(""); // Remove password before sending user-object
+			return User;
 		} else {
 			throw new UserException("Wrong password for user '" + User.getUserName() + "'");
 		}
@@ -58,14 +56,16 @@ public class UserController {
 		if (oldUser.isPresent()) {
 			User thisUser = oldUser.get();
 			thisUser.setToken(null);
-			return repository.save(thisUser);
+			repository.save(User);
+			User.setPassword(""); // Remove password before sending user-object
+			return User;
 		} else {
 			throw new UserException("\"" + User.getUserName() + "\" does not exist");
 		}
 	}
 
-	// --- The following methods are for debugging - a real web service would not
-	// offer them ---
+	// --- The following user methods are for debugging only
+	// --- A real web service would not
 
 	// List all Users
 	@GetMapping("/users")
@@ -80,24 +80,15 @@ public class UserController {
 				.orElseThrow(() -> new UserException("\"" + userName + "\" does not exist"));
 	}
 
-	// Ping the server, hoping for a response
+	// --- Ping functionality
+
 	@GetMapping("/ping")
 	String ping() {
 		return "{ \"ping\":\"success\" }";
 	}
 
-	// Ping the server, test validity of a token
-	@PostMapping("/ping")
-	String pingToken(@RequestBody String json) throws JsonProcessingException {
-		// Convert incoming JSON to a map, then fetch the value of the token-property
-		ObjectMapper mapper = new ObjectMapper();
-		HashMap<String, String> map = new HashMap<>();
-		map = mapper.readValue(json, HashMap.class);
-
-		// Check the token for validity
-		return (Token.validate(map.get("token"))) ? "{ \"ping\":\"success\" }" : "{ \"ping\":\"failure\" }";
-	}
-
+	// --- Getter method for the repository
+	
 	// User data needs checked from various places
 	public static UserRepository getRepository() {
 		return repository;
