@@ -26,7 +26,9 @@ public class UserController {
 		Optional<User> oldUser = repository.findById(User.getUserName());
 		if (oldUser.isEmpty()) {
 			User.setUserExpiry(LocalDateTime.now().plusDays(7));
-			return repository.save(User);
+			repository.save(User);
+			User.setPassword(""); // Remove password before sending user-object
+			return User;
 		} else {
 			throw new UserException("'" + User.getUserName() + "' already exists");
 		}
