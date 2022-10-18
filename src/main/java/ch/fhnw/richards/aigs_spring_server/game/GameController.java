@@ -19,7 +19,7 @@ public class GameController {
 	private static GameRepository repository;
 
 	GameController(GameRepository repository) {
-		this.repository = repository;
+		GameController.repository = repository;
 	}
 
 	// User creates a new game

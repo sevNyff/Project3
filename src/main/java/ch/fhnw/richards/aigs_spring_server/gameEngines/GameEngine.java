@@ -6,6 +6,7 @@ import ch.fhnw.richards.aigs_spring_server.game.Game;
 import ch.fhnw.richards.aigs_spring_server.game.GameType;
 
 public interface GameEngine {
+	@SuppressWarnings("unchecked")
 	public static GameEngine getGameEngine(GameType gameType) {
 		try {
 			String packageName = GameEngine.class.getPackageName();

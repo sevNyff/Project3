@@ -1,6 +1,5 @@
 package ch.fhnw.richards.aigs_spring_server.utility;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import ch.fhnw.richards.aigs_spring_server.user.User;

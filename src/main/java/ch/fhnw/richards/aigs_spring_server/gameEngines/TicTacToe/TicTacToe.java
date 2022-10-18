@@ -1,11 +1,8 @@
 package ch.fhnw.richards.aigs_spring_server.gameEngines.TicTacToe;
 
 import java.util.HashMap;
-import java.util.Optional;
 
 import ch.fhnw.richards.aigs_spring_server.game.Game;
-import ch.fhnw.richards.aigs_spring_server.game.GameController;
-import ch.fhnw.richards.aigs_spring_server.game.GameRepository;
 import ch.fhnw.richards.aigs_spring_server.gameEngines.GameEngine;
 
 /**

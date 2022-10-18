@@ -1,7 +1,5 @@
 package ch.fhnw.richards.aigs_spring_server.gameEngines.TicTacToe;
 
-import ch.fhnw.richards.aigs_spring_server.game.Game;
-
 public class RandomPlayer implements ttt_ai {
 
 	@Override
