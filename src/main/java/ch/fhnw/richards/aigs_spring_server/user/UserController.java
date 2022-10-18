@@ -56,8 +56,8 @@ public class UserController {
 		if (oldUser.isPresent()) {
 			User thisUser = oldUser.get();
 			thisUser.setToken(null);
-			repository.save(User);
-			User.setPassword(""); // Remove password before sending user-object
+			repository.save(thisUser);
+			User.setPassword(""); // Remove any password before sending user-object
 			return User;
 		} else {
 			throw new UserException("\"" + User.getUserName() + "\" does not exist");
