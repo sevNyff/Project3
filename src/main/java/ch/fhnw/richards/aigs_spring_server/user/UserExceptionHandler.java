@@ -10,6 +10,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ch.fhnw.richards.aigs_spring_server.utility.ErrorResponse;
 
+/**
+ * What to do when the user sends an invalid request, generating a UserException?
+ * 
+ * When working with Android and the Retrofit library, any sort of error status
+ * generates an exception, which is difficult to catch. For this reason, we turn
+ * a UserException into a status 200 (OK), but with an error message.
+ */
 @ControllerAdvice
 public class UserExceptionHandler {
 
@@ -20,7 +27,7 @@ public class UserExceptionHandler {
     ResponseEntity<ErrorResponse> userError(UserException ex) {
         LOG.error("User exception " , ex);
         ErrorResponse response = new ErrorResponse("User error", ex.getMessage());
-        return new ResponseEntity<ErrorResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<ErrorResponse>(response, HttpStatus.OK);
     }
 
 
