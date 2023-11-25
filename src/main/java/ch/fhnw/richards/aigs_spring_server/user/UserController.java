@@ -4,15 +4,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import ch.fhnw.richards.aigs_spring_server.utility.Token;
 
 @RestController
+@CrossOrigin(origins = "*") // Allow cross-origin requests (necessary for web clients)
 public class UserController {
 	private static UserRepository repository;
 

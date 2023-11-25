@@ -3,10 +3,7 @@ package ch.fhnw.richards.aigs_spring_server.game;
 import java.util.HashMap;
 import java.util.List;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +12,7 @@ import ch.fhnw.richards.aigs_spring_server.gameEngines.GameEngine;
 import ch.fhnw.richards.aigs_spring_server.utility.Token;
 
 @RestController
+@CrossOrigin(origins = "*") // Allow cross-origin requests (necessary for web clients)
 public class GameController {
 	private static GameRepository repository;
 
@@ -59,8 +57,7 @@ public class GameController {
 	Game gameMove(@RequestBody String json) throws JsonProcessingException {
 		// Convert incoming JSON to a map, then fetch the value of the token-property
 		ObjectMapper mapper = new ObjectMapper();
-		HashMap<String, String> map = new HashMap<>();
-		map = mapper.readValue(json, HashMap.class);
+		HashMap<String, String> map = mapper.readValue(json, HashMap.class);
 
 		// Check the token for validity
 		String token = map.get("token");
