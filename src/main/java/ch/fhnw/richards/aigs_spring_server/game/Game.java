@@ -19,7 +19,7 @@ public class Game {
 	Long difficulty;
 	@Column(name = "options")
 	String options;
-	@Column(name = "board")
+	@Column(name = "board", length=2048)
 	long[][] board;
 	@Column(name = "result")
 	Boolean result; // true = won, false = lost, null = playing
