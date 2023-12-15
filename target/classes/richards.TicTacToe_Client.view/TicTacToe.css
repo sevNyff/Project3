@@ -1,0 +1,48 @@
+.vbox {
+	-fx-alignment: center;
+	-fx-spacing: 15;
+	-fx-fill-width: true;
+}
+
+.gameBoard {
+	-fx-alignment: center;
+}
+
+.button {
+  -fx-font-weight: bold;
+  -fx-text-fill: #008000;
+  -fx-border-color: #000000;
+  -fx-border-width: 1px;
+  -fx-border-style: solid;
+}
+
+.toolbar .button {
+  -fx-font-size: 14px;
+}
+
+.toolbar .button:disabled {
+  -fx-opacity: 0.5;
+  -fx-text-fill: #808080;
+}
+
+.label {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #000000;
+  -fx-alignment: center;
+  -fx-max-width: 9999;
+}
+
+.gameButton {
+  -fx-font-size: 72px;
+  -fx-pref-width: 200;
+  -fx-pref-height: 200;
+}
+
+.valid {
+  -fx-text-fill: green;
+}
+
+.invalid {
+  -fx-text-fill: red;
+}
