@@ -1,6 +1,6 @@
 package ch.fhnw.richards.aigs_spring_server.gameEngines.Connect4;
 
-import ch.fhnw.richards.aigs_spring_server.gameEngines.TicTacToe.Move;
+import ch.fhnw.richards.aigs_spring_server.gameEngines.Connect4.Move;
 
 public class MinmaxPlayer implements C4_AI{
     private long myPiece = -1; // Which player are we?
