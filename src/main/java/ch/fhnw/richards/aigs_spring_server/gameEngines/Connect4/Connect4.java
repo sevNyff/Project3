@@ -39,7 +39,63 @@ import java.util.HashMap;
         private boolean getResult(long[][] board) {
             return getWinner(board) != null;
         }
+        static Long getWinner(long[][] board) {
+            long winner = 0;
+            // Check all rows for horizontal win
+            for (int row = 0; row < board.length; row++) {
+                for (int col = 0; col < board[0].length - 3; col++) {
+                    if (board[row][col] != 0 &&
+                            board[row][col] == board[row][col + 1] &&
+                            board[row][col] == board[row][col + 2] &&
+                            board[row][col] == board[row][col + 3]) {
+                        winner = board[row][col];
+                        return winner;
+                    }
+                }
+            }
 
+            // Check all columns for vertical win
+            for (int col = 0; col < board[0].length; col++) {
+                for (int row = 0; row < board.length - 3; row++) {
+                    if (board[row][col] != 0 &&
+                            board[row][col] == board[row + 1][col] &&
+                            board[row][col] == board[row + 2][col] &&
+                            board[row][col] == board[row + 3][col]) {
+                        winner = board[row][col];
+                        return winner;
+                    }
+                }
+            }
+
+            // Check for diagonal win (down-right and up-right)
+            for (int row = 0; row < board.length - 3; row++) {
+                for (int col = 0; col < board[0].length - 3; col++) {
+                    if (board[row][col] != 0 &&
+                            board[row][col] == board[row + 1][col + 1] &&
+                            board[row][col] == board[row + 2][col + 2] &&
+                            board[row][col] == board[row + 3][col + 3]) {
+                        winner = board[row][col];
+                        return winner;
+                    }
+                }
+            }
+            for (int row = 3; row < board.length; row++) {
+                for (int col = 0; col < board[0].length - 3; col++) {
+                    if (board[row][col] != 0 &&
+                            board[row][col] == board[row - 1][col + 1] &&
+                            board[row][col] == board[row - 2][col + 2] &&
+                            board[row][col] == board[row - 3][col + 3]) {
+                        winner = board[row][col];
+                        return winner;
+                    }
+                }
+            }
+
+            // No winner found
+            return null;
+        }
+
+/*
         static Long getWinner(long[][] board) {
             // Check for a win horizontally
             for (int row = 0; row < board.length; row++) {
@@ -80,19 +136,10 @@ import java.util.HashMap;
             // No winner yet
             return null;
         }
+
+        //The checkConsecutive method is a helper function that verifies if four values are the same and not equal to zero, indicating a win.
         private static boolean checkConsecutive(long a, long b, long c, long d) {
             return a != 0 && a == b && a == c && a == d;
         }
-
-        private boolean isBoardFull(long[][] board) {
-            for (int row = 0; row < board.length; row++) {
-                for (int col = 0; col < board[row].length; col++) {
-                    if (board[row][col] == 0) {
-                        return false; // Board still has empty spaces
-                    }
-                }
-            }
-            return true; // All spaces are filled, indicating a draw
-        }
+        */
     }
-
