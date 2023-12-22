@@ -2,64 +2,89 @@ package ch.fhnw.richards.aigs_spring_server.gameEngines.Connect4;
 
 public class MinmaxPlayer implements C4_AI {
     private long myPiece = -1; // Which player are we?
-    private static final int MAX_DEPTH = 5; // Set a limit to the recursion depth
 
-    private enum Evaluation { LOSS, DRAW, WIN };
+    private enum Evaluation { LOSS, DRAW, WIN }
 
     private class MoveEval {
-        Move move;
+        int col;
         Evaluation evaluation;
 
-        public MoveEval(Move move, Evaluation evaluation) {
-            this.move = move;
+        public MoveEval(int col, Evaluation evaluation) {
+            this.col = col;
             this.evaluation = evaluation;
         }
     }
 
     @Override
     public void makeMove(long[][] board) {
-        try {
-            MoveEval moveEval = findBestMove(board, myPiece, 0);
-            if (moveEval != null && moveEval.move != null) {
-                int row = findFirstEmptyRow(board, moveEval.move.getCol());
-                if (row != -1) {
-                    board[row][moveEval.move.getCol()] = myPiece;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace(); // Log the exception
+        int move = findMove(board, myPiece).col;
+        int row = findFirstEmptyRow(board, move);
+        if (row != -1) {
+            board[row][move] = myPiece;
         }
     }
 
-    private MoveEval findBestMove(long[][] board, long toMove, int depth) {
-        if (depth > MAX_DEPTH) {
-            return new MoveEval(null, Evaluation.DRAW); // Stop at max depth
+    private MoveEval findMove(long[][] board, long toMove) {
+        int bestCol = -1;
+        Evaluation bestEval = Evaluation.LOSS;
+
+        // Check for a win, loss, or draw situation first
+        Long result = Connect4.getWinner(board);
+        if (result != null) {
+            if (result == toMove) return new MoveEval(-1, Evaluation.WIN);
+            else if (result == (0 - toMove)) return new MoveEval(-1, Evaluation.LOSS);
+            else return new MoveEval(-1, Evaluation.DRAW);
+        } else {
+            // Iterate through columns to find the best move
+            for (int col = 0; col < board[0].length; col++) {
+                int row = findFirstEmptyRow(board, col);
+                if (row != -1) {
+                    // Simulate the move
+                    long[][] tempBoard = copyBoard(board);
+                    tempBoard[row][col] = toMove;
+                    Evaluation tempEval = minimax(tempBoard, 0, false, (toMove == 1) ? -1 : 1);
+
+                    // Choose the best move
+                    if (tempEval.ordinal() > bestEval.ordinal()) {
+                        bestEval = tempEval;
+                        bestCol = col;
+                    }
+                }
+            }
+            return new MoveEval(bestCol, bestEval);
+        }
+    }
+
+    private Evaluation minimax(long[][] board, int depth, boolean isMaximizingPlayer, long currentPlayer) {
+        Long result = Connect4.getWinner(board);
+        if (result != null) {
+            if (result == myPiece) return Evaluation.WIN;
+            else if (result == (0 - myPiece)) return Evaluation.LOSS;
+            else return Evaluation.DRAW;
         }
 
-        Move bestMove = null;
-        Evaluation bestEval = Evaluation.LOSS;
+        if (depth >= 6) { // Limiting depth for performance
+            return Evaluation.DRAW;
+        }
+
+        Evaluation bestEval = isMaximizingPlayer ? Evaluation.LOSS : Evaluation.WIN;
 
         for (int col = 0; col < board[0].length; col++) {
             int row = findFirstEmptyRow(board, col);
             if (row != -1) {
                 long[][] tempBoard = copyBoard(board);
-                tempBoard[row][col] = toMove;
+                tempBoard[row][col] = currentPlayer;
+                Evaluation eval = minimax(tempBoard, depth + 1, !isMaximizingPlayer, -currentPlayer);
 
-                // Check if the current move is a winning move before proceeding
-                if (Connect4.getWinner(tempBoard) == toMove) {
-                    return new MoveEval(new Move(toMove, col, row), Evaluation.WIN);
-                }
-
-                MoveEval tempEval = findBestMove(tempBoard, -toMove, depth + 1);
-                Evaluation currentEval = invertResult(tempEval.evaluation);
-
-                if (currentEval.ordinal() > bestEval.ordinal() || (currentEval == bestEval && Math.random() < 0.5)) {
-                    bestEval = currentEval;
-                    bestMove = new Move(toMove, col, row);
+                if (isMaximizingPlayer && eval.ordinal() > bestEval.ordinal()) {
+                    bestEval = eval;
+                } else if (!isMaximizingPlayer && eval.ordinal() < bestEval.ordinal()) {
+                    bestEval = eval;
                 }
             }
         }
-        return new MoveEval(bestMove, bestEval);
+
+        return bestEval;
     }
 
     private int findFirstEmptyRow(long[][] board, int col) {
@@ -69,12 +94,6 @@ public class MinmaxPlayer implements C4_AI {
             }
         }
         return -1; // Column is full
-    }
-
-    private Evaluation invertResult(Evaluation in) {
-        if (in == Evaluation.DRAW) return Evaluation.DRAW;
-        else if (in == Evaluation.WIN) return Evaluation.LOSS;
-        return Evaluation.WIN;
     }
 
     private long[][] copyBoard(long[][] board) {
