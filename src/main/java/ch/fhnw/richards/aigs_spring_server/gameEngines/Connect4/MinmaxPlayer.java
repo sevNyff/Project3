@@ -1,9 +1,8 @@
 package ch.fhnw.richards.aigs_spring_server.gameEngines.Connect4;
 
-import ch.fhnw.richards.aigs_spring_server.gameEngines.Connect4.Move;
-
-public class MinmaxPlayer implements C4_AI{
+public class MinmaxPlayer implements C4_AI {
     private long myPiece = -1; // Which player are we?
+    private static final int MAX_DEPTH = 5; // Set a limit to the recursion depth
 
     private enum Evaluation { LOSS, DRAW, WIN };
 
@@ -17,34 +16,43 @@ public class MinmaxPlayer implements C4_AI{
         }
     }
 
-
-/*
     @Override
     public void makeMove(long[][] board) {
-        MoveEval moveEval = findBestMove(board, myPiece);
-        if (moveEval != null && moveEval.move != null) {
-            int row = findFirstEmptyRow(board, moveEval.move.getCol());
-            if (row != -1) {
-                board[row][moveEval.move.getCol()] = myPiece;
+        try {
+            MoveEval moveEval = findBestMove(board, myPiece, 0);
+            if (moveEval != null && moveEval.move != null) {
+                int row = findFirstEmptyRow(board, moveEval.move.getCol());
+                if (row != -1) {
+                    board[row][moveEval.move.getCol()] = myPiece;
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception
         }
     }
 
-    private MoveEval findBestMove(long[][] board, long toMove) {
+    private MoveEval findBestMove(long[][] board, long toMove, int depth) {
+        if (depth > MAX_DEPTH) {
+            return new MoveEval(null, Evaluation.DRAW); // Stop at max depth
+        }
+
         Move bestMove = null;
         Evaluation bestEval = Evaluation.LOSS;
 
-        // Iterate through columns to find the best move
         for (int col = 0; col < board[0].length; col++) {
             int row = findFirstEmptyRow(board, col);
             if (row != -1) {
-                // Simulate the move
                 long[][] tempBoard = copyBoard(board);
                 tempBoard[row][col] = toMove;
-                MoveEval tempEval = findBestMove(tempBoard, (toMove == 1) ? -1 : 1);
+
+                // Check if the current move is a winning move before proceeding
+                if (Connect4.getWinner(tempBoard) == toMove) {
+                    return new MoveEval(new Move(toMove, col, row), Evaluation.WIN);
+                }
+
+                MoveEval tempEval = findBestMove(tempBoard, -toMove, depth + 1);
                 Evaluation currentEval = invertResult(tempEval.evaluation);
 
-                // Choose the best move
                 if (currentEval.ordinal() > bestEval.ordinal() || (currentEval == bestEval && Math.random() < 0.5)) {
                     bestEval = currentEval;
                     bestMove = new Move(toMove, col, row);
@@ -79,70 +87,4 @@ public class MinmaxPlayer implements C4_AI{
         }
         return newBoard;
     }
-    */
-
-    @Override
-    public void makeMove(long[][] board) {
-        Move move = findMove(board, myPiece).move;
-        board[move.getRow()][move.getCol()] = myPiece;
-    }
-    private MoveEval findMove(long[][] board, long toMove) {
-        Move bestMove = null;
-        Evaluation bestEval = Evaluation.LOSS;
-
-        // Check for a win, loss, or draw situation first
-        Long result = Connect4.getWinner(board);
-        if (result != null) {
-            if (result == toMove) return new MoveEval(null, Evaluation.WIN);
-            else if (result == (0 - toMove)) return new MoveEval(null, Evaluation.LOSS);
-            else return new MoveEval(null, Evaluation.DRAW);
-        } else {
-            // Iterate through columns instead of rows and columns
-            for (int col = 0; col < board[0].length; col++) {
-                // Find the lowest empty space in the column
-                int row = findFirstEmptyRow(board, col);
-                if (row != -1) {
-                    // Simulate the move
-                    long[][] possBoard = copyBoard(board);
-                    possBoard[row][col] = toMove;
-                    MoveEval tempMR = findMove(possBoard, (toMove == 1) ? -1 : 1);
-                    Evaluation possEval = invertResult(tempMR.evaluation);
-
-                    // Choose the best move
-                    if (possEval.ordinal() > bestEval.ordinal() || (possEval == bestEval && Math.random() < 0.5)) {
-                        bestEval = possEval;
-                        bestMove = new Move(toMove, col, row);
-                    }
-                }
-            }
-            return new MoveEval(bestMove, bestEval);
-        }
-    }
-
-    private int findFirstEmptyRow(long[][] board, int col) {
-        for (int row = board.length - 1; row >= 0; row--) {
-            if (board[row][col] == 0) {
-                return row;
-            }
-        }
-        return -1; // Column is full
-    }
-
-    private Evaluation invertResult(Evaluation in) {
-        if (in == Evaluation.DRAW) return Evaluation.DRAW;
-        else if (in == Evaluation.WIN) return Evaluation.LOSS;
-        return Evaluation.WIN;
-    }
-
-    private long[][] copyBoard(long[][] board) {
-        long[][] newBoard = new long[board.length][];
-        for (int i = 0; i < board.length; i++) {
-            newBoard[i] = new long[board[i].length];
-            for (int j = 0; j < board[i].length; j++) {
-                newBoard[i][j] = board[i][j];
-            }
-        }
-        return newBoard;
-    }
-
 }
