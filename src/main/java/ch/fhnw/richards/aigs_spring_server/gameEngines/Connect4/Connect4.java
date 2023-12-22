@@ -17,24 +17,42 @@ import java.util.HashMap;
 
         @Override
         public Game move(Game game, HashMap<String, String> move) {
-            int row = Integer.parseInt(move.get("row"));
             int col = Integer.parseInt(move.get("col"));
+            long[][] board = game.getBoard();
 
-            // Only accept the player's move if it is valid
-            if (!game.getResult() && playerMove && game.getBoard()[row][col] == 0) {
-                game.getBoard()[row][col] = 1;
-                game.setResult(getResult(game.getBoard()));
-
-                if (!game.getResult()) {
-                    // Process AI's move
-                    C4_AI player = (game.getDifficulty() <= 1) ? new RandomPlayer() : new MinmaxPlayer();
-                    player.makeMove(game.getBoard());
-                    playerMove = true; // Switch back to player's turn
-                }
-                game.setResult(getResult(game.getBoard()));
+            // Check if the column is full
+            if (board[0][col] != 0) {
+                // Column is full, handle accordingly (e.g., inform the player)
+                return game;
             }
+
+            // Find the bottom-most empty row in the specified column
+            int rowToPlace = -1;
+            for (int row = board.length - 1; row >= 0; row--) {
+                if (board[row][col] == 0) {
+                    rowToPlace = row;
+                    break;
+                }
+            }
+
+            // Place the player's move in the found row
+            if (rowToPlace != -1 && !game.getResult()) {
+                board[rowToPlace][col] = playerMove ? 1 : -1;
+                playerMove = !playerMove; // Switch turn
+                game.setResult(getResult(board));
+            }
+
+            // If it's now AI's turn, make its move
+            if (!game.getResult() && !playerMove) {
+                C4_AI player = (game.getDifficulty() <= 1) ? new RandomPlayer() : new MinmaxPlayer();
+                player.makeMove(board);
+                playerMove = true; // Switch back to player's turn
+                game.setResult(getResult(board));
+            }
+
             return game;
         }
+
 
         private boolean getResult(long[][] board) {
             return getWinner(board) != null;
