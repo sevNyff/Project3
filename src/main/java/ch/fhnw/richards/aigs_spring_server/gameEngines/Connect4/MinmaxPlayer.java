@@ -18,7 +18,7 @@ public class MinmaxPlayer implements C4_AI{
     }
 
 
-
+/*
     @Override
     public void makeMove(long[][] board) {
         MoveEval moveEval = findBestMove(board, myPiece);
@@ -79,10 +79,9 @@ public class MinmaxPlayer implements C4_AI{
         }
         return newBoard;
     }
+    */
 
-/*
-
-@Override
+    @Override
     public void makeMove(long[][] board) {
         Move move = findMove(board, myPiece).move;
         board[move.getRow()][move.getCol()] = myPiece;
@@ -146,5 +145,4 @@ public class MinmaxPlayer implements C4_AI{
         return newBoard;
     }
 
- */
 }
