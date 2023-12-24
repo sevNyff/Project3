@@ -22,8 +22,6 @@ import java.util.HashMap;
 
             // Check if the column is full
             if (board[0][col] != 0) {
-                // Column is full, handle accordingly (e.g., inform the player)
-                System.out.println("Column " + col + " is already full.");
                 return game;
             }
 
@@ -49,7 +47,6 @@ import java.util.HashMap;
                 player.makeMove(board);
                 playerMove = true; // Switch back to player's turn
                 game.setResult(getResult(board));
-                System.out.println("AI Move Made.");
             }
 
             return game;

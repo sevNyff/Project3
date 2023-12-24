@@ -26,7 +26,6 @@ public class MinmaxPlayer implements C4_AI {
         if (row != -1) {
             board[row][move] = myPiece;
         }
-        System.out.println("AI Move Executed.");
     }
 
     private MoveEval findMove(long[][] board, long toMove) {
@@ -44,8 +43,6 @@ public class MinmaxPlayer implements C4_AI {
             for (int col = 0; col < board[0].length; col++) {
                 int row = findFirstEmptyRow(board, col);
                 if (row != -1) {
-                    // Print the evaluated column and row
-                    System.out.println("Evaluating column: " + col + ", row: " + row);
 
                     // Simulate the move
                     long[][] tempBoard = copyBoard(board);
@@ -65,7 +62,6 @@ public class MinmaxPlayer implements C4_AI {
                 return new MoveEval(playRandomMove(board), Evaluation.LOSS);
             }
 
-            System.out.println("Best column: " + bestCol + ", Best evaluation: " + bestEval);
             return new MoveEval(bestCol, bestEval);
         }
     }
@@ -109,9 +105,6 @@ public class MinmaxPlayer implements C4_AI {
                 tempBoard[row][col] = currentPlayer;
                 Evaluation eval = minimax(tempBoard, depth + 1, !isMaximizingPlayer, -currentPlayer);
 
-                // Print the evaluated column, row, and evaluation
-                System.out.println("Depth: " + depth + ", Column: " + col + ", Row: " + row + ", Evaluation: " + eval);
-
                 if (isMaximizingPlayer && eval.ordinal() > bestEval.ordinal()) {
                     bestEval = eval;
                 } else if (!isMaximizingPlayer && eval.ordinal() < bestEval.ordinal()) {
@@ -119,7 +112,6 @@ public class MinmaxPlayer implements C4_AI {
                 }
             }
         }
-        System.out.println("Best evaluation: " + bestEval);
         return bestEval;
     }
 
