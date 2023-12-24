@@ -1,5 +1,9 @@
 package ch.fhnw.richards.aigs_spring_server.gameEngines.Connect4;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class MinmaxPlayer implements C4_AI {
     private long myPiece = -1; // Which player are we?
 
@@ -22,10 +26,11 @@ public class MinmaxPlayer implements C4_AI {
         if (row != -1) {
             board[row][move] = myPiece;
         }
+        System.out.println("AI Move Executed.");
     }
 
     private MoveEval findMove(long[][] board, long toMove) {
-        int bestCol = -1;
+        int bestCol = -1; // Initialize to an invalid column
         Evaluation bestEval = Evaluation.LOSS;
 
         // Check for a win, loss, or draw situation first
@@ -39,6 +44,9 @@ public class MinmaxPlayer implements C4_AI {
             for (int col = 0; col < board[0].length; col++) {
                 int row = findFirstEmptyRow(board, col);
                 if (row != -1) {
+                    // Print the evaluated column and row
+                    System.out.println("Evaluating column: " + col + ", row: " + row);
+
                     // Simulate the move
                     long[][] tempBoard = copyBoard(board);
                     tempBoard[row][col] = toMove;
@@ -51,9 +59,34 @@ public class MinmaxPlayer implements C4_AI {
                     }
                 }
             }
+
+            if (bestCol == -1) {
+                // No valid moves found, return any column instead of -1
+                return new MoveEval(playRandomMove(board), Evaluation.LOSS);
+            }
+
+            System.out.println("Best column: " + bestCol + ", Best evaluation: " + bestEval);
             return new MoveEval(bestCol, bestEval);
         }
     }
+
+    private int playRandomMove(long[][] board) {
+        List<Integer> availableColumns = new ArrayList<>();
+        for (int col = 0; col < board[0].length; col++) {
+            if (board[0][col] == 0) { // Check if the top of the column is empty
+                availableColumns.add(col);
+            }
+        }
+
+        if (!availableColumns.isEmpty()) {
+            Random rand = new Random();
+            return availableColumns.get(rand.nextInt(availableColumns.size()));
+        }
+
+        return 0; // Return column 0 if no other move is available (should not happen if called correctly)
+    }
+
+
 
     private Evaluation minimax(long[][] board, int depth, boolean isMaximizingPlayer, long currentPlayer) {
         Long result = Connect4.getWinner(board);
@@ -76,6 +109,9 @@ public class MinmaxPlayer implements C4_AI {
                 tempBoard[row][col] = currentPlayer;
                 Evaluation eval = minimax(tempBoard, depth + 1, !isMaximizingPlayer, -currentPlayer);
 
+                // Print the evaluated column, row, and evaluation
+                System.out.println("Depth: " + depth + ", Column: " + col + ", Row: " + row + ", Evaluation: " + eval);
+
                 if (isMaximizingPlayer && eval.ordinal() > bestEval.ordinal()) {
                     bestEval = eval;
                 } else if (!isMaximizingPlayer && eval.ordinal() < bestEval.ordinal()) {
@@ -83,18 +119,25 @@ public class MinmaxPlayer implements C4_AI {
                 }
             }
         }
-
+        System.out.println("Best evaluation: " + bestEval);
         return bestEval;
     }
 
     private int findFirstEmptyRow(long[][] board, int col) {
+        // Check if the column is not full
+        if (board[0][col] != 0) {
+            return -1; // Column is full
+        }
+
+        // Iterate through rows to find the first empty row
         for (int row = board.length - 1; row >= 0; row--) {
             if (board[row][col] == 0) {
                 return row;
             }
         }
-        return -1; // Column is full
+        return -1; // Column is full, should not happen if called correctly
     }
+
 
     private long[][] copyBoard(long[][] board) {
         long[][] newBoard = new long[board.length][];
