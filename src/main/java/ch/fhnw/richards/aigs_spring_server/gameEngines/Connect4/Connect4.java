@@ -47,6 +47,9 @@ import java.util.HashMap;
                 player.makeMove(board);
                 playerMove = true; // Switch back to player's turn
                 game.setResult(getResult(board));
+                if (isDraw(board)) {
+                    game.setResult(true);
+                }
             }
 
             return game;
@@ -111,52 +114,17 @@ import java.util.HashMap;
             // No winner found
             return null;
         }
-
-/*
-        static Long getWinner(long[][] board) {
-            // Check for a win horizontally
+        private boolean isDraw(long[][] board) {
+            // Check if any cell is empty (0)
             for (int row = 0; row < board.length; row++) {
-                for (int col = 0; col <= board[row].length - 4; col++) {
-                    if (checkConsecutive(board[row][col], board[row][col + 1], board[row][col + 2], board[row][col + 3])) {
-                        return board[row][col];
+                for (int col = 0; col < board[0].length; col++) {
+                    if (board[row][col] == 0) {
+                        return false; // Not a draw since there's at least one empty cell
                     }
                 }
             }
-
-            // Check for a win vertically
-            for (int col = 0; col < board[0].length; col++) {
-                for (int row = 0; row <= board.length - 4; row++) {
-                    if (checkConsecutive(board[row][col], board[row + 1][col], board[row + 2][col], board[row + 3][col])) {
-                        return board[row][col];
-                    }
-                }
-            }
-
-            // Check for a win diagonally (left to right)
-            for (int row = 0; row <= board.length - 4; row++) {
-                for (int col = 0; col <= board[row].length - 4; col++) {
-                    if (checkConsecutive(board[row][col], board[row + 1][col + 1], board[row + 2][col + 2], board[row + 3][col + 3])) {
-                        return board[row][col];
-                    }
-                }
-            }
-
-            // Check for a win diagonally (right to left)
-            for (int row = 0; row <= board.length - 4; row++) {
-                for (int col = 3; col < board[row].length; col++) {
-                    if (checkConsecutive(board[row][col], board[row + 1][col - 1], board[row + 2][col - 2], board[row + 3][col - 3])) {
-                        return board[row][col];
-                    }
-                }
-            }
-
-            // No winner yet
-            return null;
+            // If all cells are filled and no winner, it's a draw
+            return getWinner(board) == null;
         }
 
-        //The checkConsecutive method is a helper function that verifies if four values are the same and not equal to zero, indicating a win.
-        private static boolean checkConsecutive(long a, long b, long c, long d) {
-            return a != 0 && a == b && a == c && a == d;
-        }
-        */
     }
