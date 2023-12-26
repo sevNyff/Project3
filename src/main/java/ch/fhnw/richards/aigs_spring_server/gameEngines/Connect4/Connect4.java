@@ -57,8 +57,21 @@ import java.util.HashMap;
 
 
         private boolean getResult(long[][] board) {
-            return getWinner(board) != null;
+            Long winner = getWinner(board);
+            return winner != null || isBoardFull(board);
         }
+
+        private boolean isBoardFull(long[][] board) {
+            for (int row = 0; row < board.length; row++) {
+                for (int col = 0; col < board[0].length; col++) {
+                    if (board[row][col] == 0) {
+                        return false; // If any cell is empty, the board isn't full
+                    }
+                }
+            }
+            return true; // No empty cell found, board is full
+        }
+
         static Long getWinner(long[][] board) {
             long winner = 0;
             // Check all rows for horizontal win
